@@ -8,7 +8,7 @@ GitHub supports CSVs. That's awesome. But what if you want to store user input, 
 
 Upon submission, the user is asked to Oauth, if they've not already, their identity is verified and the information is appended to the CSV.
 
-## Roadmap / Wishlist
+## Roadmap / Wish list
 
 * HTML form builder
 * Git storage of form definitions
