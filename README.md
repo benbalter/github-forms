@@ -29,7 +29,9 @@ Upon submission, the user is asked to Oauth, if they've not already, their ident
 
 ## Seting up on Heroku
 
-Same as above, just use `heroku config:set` instead of `export`
+Same as above, just use `heroku config:set` instead of `export`.
+
+You'll also want to run `heroku addons:add redistogo:nano` to set up a free redis instance.
 
 ## Running
 
