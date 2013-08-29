@@ -4,22 +4,25 @@ require 'redis'
 require 'json'
 require 'securerandom'
 require 'csv'
+require 'redcarpet'
 
 module GithubForms
   class App < Sinatra::Base
     enable :sessions
 
     set :github_options, {
-      :scopes    => "user,public_repo,repo",
+      :scopes    => "user,repo",
       :secret    => ENV['GITHUB_CLIENT_SECRET'],
       :client_id => ENV['GITHUB_CLIENT_ID'],
     }
 
-    register Sinatra::Auth::Github
-    use Rack::Session::Cookie, :expire_after => 60*60
-
     TTL = 60*5
 
+    register Sinatra::Auth::Github
+    use Rack::Session::Cookie, :expire_after => TTL
+    set :markdown, :layout_engine => :erb
+
+    # create unique sesion ID for redis storage, if not already assigned
     before do
       session[:id] = SecureRandom.uuid if session_id.nil?
     end
@@ -40,16 +43,19 @@ module GithubForms
       session[:id]
     end
 
+    # store POST data to redis cache
     def cache_data(data)
       redis.set session_id, data
       redis.expire session_id, TTL
     end
 
+    # retrieve POST data from redis cache
     def retrieve_data
       data = redis.get(session_id)
       JSON.parse data unless data.nil?
     end
 
+    # convert POST data to csv of values
     def prepare_csv(data)
       row = CSV::Row.new([],[],false)
       data.each do |key,value|
@@ -58,30 +64,48 @@ module GithubForms
       row
     end
 
-    def update_file(current,submission)
-      Base64.encode64 "#{Base64.decode64(current)}\n#{prepare_csv(submission)}"
+    # return current file with data appended
+    def updated_file(current,submission)
+      "#{Base64.decode64(current)}\n#{prepare_csv(submission)}"
     end
 
+    # Abstraction of Octokit client for both pre- and post 2.0 tokens
+    def new_client(token)
+      Octokit::Client.new :access_token => token, :oauth_token => token
+    end
+
+    # user client
     def client
-      token = env['warden'].user.nil? ? "" : env['warden'].user.token
-      Octokit::Client.new :access_token => token
+      new_client env['warden'].user.nil? ? "" : env['warden'].user.token
     end
 
+    # client with write access to file
+    def sudo_client
+      new_client ENV['GITHUB_TOKEN']
+    end
+
+    # perform the save action
     def submit(repo, branch, path, data)
+      user = env['warden'].user
       file = client.contents( repo, :branch => branch, :path => path )
       message = "[github forms] update #{path}"
-      content =  update_file file.content, data
-      client.update_contents( repo, path, message, file.sha, content, :branch => branch )
-  end
+      content =  updated_file file.content, data
+      result = sudo_client.update_contents repo, path, message, file.sha, content, {
+          :branch => branch, :author => { "name" => user.name, "email" => user.email }
+      }
+      halt markdown :success if result
+      markdown :fail
+    end
 
+    # Post oauth request
     get '/:owner/:repo/blob/:branch/*' do |owner,repo,branch,path|
       data = retrieve_data
       redirect "/" if data.nil?
       submit "#{owner}/#{repo}", branch, path, data["data"]
       redis.del session_id
-      "SUBMITTED"
     end
 
+    # initial POST request
     post '/:owner/:repo/blob/:branch/*' do |owner,repo,branch,path|
 
       unless authenticated?
@@ -99,8 +123,9 @@ module GithubForms
 
     end
 
+    # Demo
     get '/' do
-      send_file File.join(settings.public_folder, 'form.html')
+      markdown :index
     end
 
   end
