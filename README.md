@@ -1,8 +1,19 @@
 # GitHub Forms
 
-A form engine built on GitHub
+A form engine built on GitHub. You point a standard HTML form at it, it commits the data to your GitHub CSV.
 
 ## Vision
+
+GitHub supports CSVs. That's awesome. But what if you want to store user input, such as RSVPs or other form submissions? Well, now you can. Just replace `github.com` in the URL with the URL to your GitHub Forms server, and your standard HTML Form can now commit to GitHub.
+
+Upon submission, the user is asked to Oauth, if they've not already, their identity is verified and the information is appended to the CSV.
+
+## Roadmap / Wishlist
+
+* HTML form builder
+* Git storage of form definitions
+* Pull requests (sans conflicts)
+* Gemification
 
 ## Installation
 
