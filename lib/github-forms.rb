@@ -87,11 +87,11 @@ module GithubForms
     # perform the save action
     def submit(repo, branch, path, data)
       user = env['warden'].user
-      file = client.contents( repo, :branch => branch, :path => path )
+      file = client.contents( repo, :ref => branch, :path => path )
       message = "[github forms] update #{path}"
       content =  updated_file file.content, data
       result = sudo_client.update_contents repo, path, message, file.sha, content, {
-          :branch => branch, :author => { "name" => user.name, "email" => user.email }
+          :ref => branch, :author => { "name" => user.name, "email" => user.email }
       }
       halt markdown :success if result
       markdown :fail
