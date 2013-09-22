@@ -93,8 +93,9 @@ module GithubForms
       file = client.contents( repo, :ref => branch, :path => path )
       message = "[github forms] update #{path}"
       content = updated_file(file.content, data)
+      puts branch
       result = sudo_client.update_contents repo, path, message, file.sha, content, {
-          :ref => branch, :author => { "name" => user.name, "email" => user.email }
+          :branch => branch, :author => { "name" => user.name, "email" => user.email }
       }
       puts result.inspect
       halt markdown :success if result
