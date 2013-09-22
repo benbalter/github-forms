@@ -14,7 +14,7 @@ module GithubForms
     enable :sessions
 
     set :github_options, {
-      :scopes    => "user,repo",
+      :scopes    => "user:email",
       :secret    => ENV['GITHUB_CLIENT_SECRET'],
       :client_id => ENV['GITHUB_CLIENT_ID'],
     }
@@ -93,7 +93,6 @@ module GithubForms
       file = client.contents( repo, :ref => branch, :path => path )
       message = "[github forms] update #{path}"
       content = updated_file(file.content, data)
-      puts branch
       result = sudo_client.update_contents repo, path, message, file.sha, content, {
           :branch => branch, :author => { "name" => user.name, "email" => user.email }
       }
