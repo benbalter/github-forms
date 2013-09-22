@@ -5,6 +5,9 @@ require 'json'
 require 'securerandom'
 require 'csv'
 require 'redcarpet'
+require 'dotenv'
+
+Dotenv.load
 
 module GithubForms
   class App < Sinatra::Base
@@ -66,7 +69,7 @@ module GithubForms
 
     # return current file with data appended
     def updated_file(current,submission)
-      "#{Base64.decode64(current)}\n#{prepare_csv(submission)}"
+      "#{Base64.decode64(current)}#{prepare_csv(submission)}"
     end
 
     # Abstraction of Octokit client for both pre- and post 2.0 tokens
@@ -87,12 +90,13 @@ module GithubForms
     # perform the save action
     def submit(repo, branch, path, data)
       user = env['warden'].user
-      file = client.contents( repo, :branch => branch, :path => path )
+      file = client.contents( repo, :ref => branch, :path => path )
       message = "[github forms] update #{path}"
-      content =  updated_file file.content, data
+      content = updated_file(file.content, data)
       result = sudo_client.update_contents repo, path, message, file.sha, content, {
           :ref => branch, :author => { "name" => user.name, "email" => user.email }
       }
+      puts result.inspect
       halt markdown :success if result
       markdown :fail
     end
