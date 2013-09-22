@@ -1,19 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.3.5)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     multipart-post (1.2.0)
-    octokit (2.1.1)
-      sawyer (~> 0.3.0)
+    octokit (2.1.2)
+      sawyer (~> 0.5.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
     redcarpet (3.0.0)
     redis (3.0.4)
-    sawyer (0.3.0)
+    sawyer (0.5.0)
+      addressable (~> 2.3.5)
       faraday (~> 0.8, < 0.10)
-      uri_template (~> 0.5.0)
     sinatra (1.4.3)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -22,7 +23,6 @@ GEM
       sinatra (~> 1.0)
       warden-github (~> 1.0)
     tilt (1.4.1)
-    uri_template (0.5.3)
     warden (1.2.3)
       rack (>= 1.0)
     warden-github (1.0.0)
