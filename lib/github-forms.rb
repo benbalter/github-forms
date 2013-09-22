@@ -66,7 +66,7 @@ module GithubForms
 
     # return current file with data appended
     def updated_file(current,submission)
-      "#{Base64.decode64(current)}\n#{prepare_csv(submission)}"
+      "#{Base64.decode64(current)}#{prepare_csv(submission)}"
     end
 
     # Abstraction of Octokit client for both pre- and post 2.0 tokens
