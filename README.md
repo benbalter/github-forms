@@ -11,7 +11,7 @@ Upon submission, the user is asked to Oauth, if they've not already, their ident
 ## Demo
 
 * [The form](http://github-forms.herokuapp.com/)
-* [The fata](https://github.com/benbalter/github-forms/blob/example/example.csv)
+* [The data](https://github.com/benbalter/github-forms/blob/example/example.csv)
 * [The submission history](https://github.com/benbalter/github-forms/commits/example/example.csv)
 
 ## Roadmap / Wish list
