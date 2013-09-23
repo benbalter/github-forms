@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/benbalter/octokit.rb
+  revision: b9653ff3acbefd5d8ef3a5fc39324532a4c35d26
+  branch: base64_encoding_fix
+  specs:
+    octokit (2.1.2)
+      sawyer (~> 0.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -6,8 +14,6 @@ GEM
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     multipart-post (1.2.0)
-    octokit (2.1.2)
-      sawyer (~> 0.5.0)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -35,7 +41,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
-  octokit
+  octokit!
   redcarpet
   redis
   sinatra_auth_github
