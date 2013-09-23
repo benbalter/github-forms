@@ -96,7 +96,6 @@ module GithubForms
       result = sudo_client.update_contents repo, path, message, file.sha, content, {
           :branch => branch, :author => { "name" => user.name, "email" => user.email }
       }
-      puts result.inspect
       halt markdown :success if result
       markdown :fail
     end
