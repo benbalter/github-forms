@@ -39,7 +39,7 @@ module GithubForms
 
     def redis_url
       @redis_url ||=
-        URI.parse(ENV["REDISTOGO_URL"] || "redis://localhost:16379")
+        URI.parse(ENV["REDISTOGO_URL"] || ENV["REDIS_URL"] || "redis://localhost:16379")
     end
 
     def session_id
