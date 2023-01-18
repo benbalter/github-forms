@@ -14,7 +14,7 @@ GEM
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
     multipart-post (1.2.0)
-    rack (1.5.2)
+    rack (1.6.13)
     rack-protection (1.5.0)
       rack
     redcarpet (3.0.0)
